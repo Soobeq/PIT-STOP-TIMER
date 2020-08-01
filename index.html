@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>PITSTOP timer</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/1764f80422.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <style>
+        
+        body {
+            background-color: black;
+            font-family: 'Roboto', sans-serif;
+            color: aquamarine;
+            margin: 0;
+            overflow-y:hidden;
+        }
+        
+        #headup{
+           
+            height: 20px;
+            font-size: 10px;
+            color: tomato;
+            text-align: right;
+            background-color: #333;
+            line-height: 20px;
+            padding-right: 5px;
+
+        }
+        
+        .box{
+            background-color: blue;
+            font-size: 350px;
+            width: 100%;
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+            height: 300px;
+            text-align: center;
+            line-height: 300px;
+            color: white;
+        }
+
+        #test_box{
+         position: absolute;
+         width: 100%;
+         bottom: 0px;
+         background-color: black;
+         text-align: right;
+        }
+        </style>
+
+    </head>
+ 
+    <body>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var czas = 1500;
+            var min_time=5;
+            var fadeOut_time= czas;
+            var socket = io.connect('http://localhost:8080');
+            socket.on('message', function(message) {
+                //document.getElementById("test_box").innerHTML= '' + message;
+                var splits = message.split(";");
+                var error = "X";
+                var msg_ok = "OK";
+                
+                for(var i=0;i<8;i++) {
+                document.getElementById("box"+(i+1)).innerHTML= (splits[i]/100).toFixed(2);
+                }
+                /**SHOW_HIDE**/
+                
+                for(var i=0;i<8;i++) {
+                if( splits[i] < min_time ){ $("#box"+(i+1)).fadeOut(1,"linear") } else if(splits[i]< fadeOut_time ) { $("#box"+(i+1)).fadeIn(1,"linear");}
+                }
+                /*
+                for(var i=0;i<8;i++) {
+                    if( splits[i] == czas ){ $("#box"+(i+1)).fadeOut(2000,"linear")} 
+                }
+                */
+                //if( splits[0] > fadeOut_time ){ $("#box1").fadeOut(1000,"linear")} 
+                // if( splits[1] > fadeOut_time ){ $("#box2").fadeOut(1000,"linear") } 
+                // if( splits[2] > fadeOut_time ){ $("#box3").fadeOut(1000,"linear") } 
+                // if( splits[3] > fadeOut_time ){ $("#box4").fadeOut(1000, "linear") } 
+                // if( splits[4] > fadeOut_time ){ $("#box5").fadeOut(1000, "linear") } 
+                // if( splits[5] > fadeOut_time ){ $("#box6").fadeOut(1000, "linear") } 
+                // if( splits[6] > fadeOut_time ){ $("#box7").fadeOut(1000,"linear") } 
+                // if( splits[7] > fadeOut_time ){ $("#box8").fadeOut(1000,"linear") } 
+                 
+                /**SHOW_HIDE***/
+                for(var i=0;i<8;i++)
+                {
+                if( splits[i] == czas+1 ){ 
+                    document.getElementById("box"+(i+1)).innerHTML= msg_ok;
+                    $("#box"+(i+1)).css({"background-color": "green", "color": "white"})
+                } else if( splits[i] == czas+2 ){ 
+                    document.getElementById("box"+(i+1)).innerHTML= error;
+                    $("#box"+(i+1)).css({"background-color": "red", "color": "white"})
+                } else {
+                    $("#box"+(i+1)).css({"background-color": "blue", "color": "white"})
+                }
+                
+            } // FOR end
+                
+                var $divs = $("div.box");
+                function sort() {
+                    var numericallyOrderedDivs = $divs.sort(function (a, b) {
+                        return $(a).find().text() > $(b).find().text();
+                    });
+                    $("#container").html(numericallyOrderedDivs);
+                }
+                            })
+
+            /*$('#poke').click(function () {
+                socket.emit('message', 'Hi server, how are you?');
+            })*/
+
+
+        </script>
+<div id="test_box"></div>
+<div id="headup">
+    <i class="fab fa-node" style="color: #777; float: left; font-size: 20px; line-height: 20px; text-indent: 5px;"></i>
+    <i class="fab fa-html5" style="color: #777; float: left; font-size: 15px; line-height: 20px; text-indent: 5px;"></i>
+    <i class="fas fa-microchip" style="color: #777; float: left; font-size: 10px; line-height: 20px; text-indent: 5px;"></i>
+    PITSTOP timer &copy; 2019 Sebastian Górczak </div>
+<div id="container">    
+<div id ="box1" class="box">KART 1</div>
+<div id ="box2" class="box">KART 2</div>
+<div id ="box3" class="box">KART 3</div>
+<div id ="box4" class="box">KART 4</div>
+<div id ="box5" class="box">KART 5</div>
+<div id ="box6" class="box">KART 6</div>
+<div id ="box7" class="box">KART 7</div>
+<div id ="box8" class="box">KART 8</div>
+</div>
+<!--div id="test_box"></div-->
+</body>
+
+
+</html>
